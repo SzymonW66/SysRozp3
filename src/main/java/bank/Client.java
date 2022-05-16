@@ -36,6 +36,7 @@ public class Client {
 
         //Deklaracje zmiennych strumieniowych
         String line = null;
+        String info = null;
         String username = null; //Zmienna dla loginu
         String password = null; //Zmienna dla hasła
         int option = 0;
@@ -58,7 +59,7 @@ public class Client {
         //Pętla główna klienta
         while (true) {
             //pobranie danych logowania, wysłania na serwer i odebranie true albo false
-          Boolean validate = userLogin(username, password, line, out, brLocalInp, brSockInp, clientSocket);
+          boolean validate = userLogin(username, password, line, out, brLocalInp, brSockInp, clientSocket);
             if (validate == true) {
                 System.out.println("1 - Wypłać pieniądze");
                 System.out.println("2 - Wpłać pieniądze");
@@ -83,6 +84,16 @@ public class Client {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            System.out.println("Podaj ile chcesz wypłacić pieniędzy ");
+                            try {
+                                double money = Double.parseDouble(brLocalInp.readLine());
+                                out.writeBytes(String.valueOf(money));
+                                out.flush();
+                                info = brSockInp.readLine();
+                                System.out.println("Otrzymano wiadomość: " + info);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             break;
                         case 2:
                             System.out.println("Wybrano opcję wpłaty");
@@ -91,12 +102,34 @@ public class Client {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            //przyjecie z serwera info
+                            System.out.println("Podaj ile chcesz wpłacić pieniędzy ");
+                            try {
+                                double money1 = Double.parseDouble(brLocalInp.readLine());
+                                out.writeBytes(String.valueOf(money1));
+                                out.flush();
+                                info = brSockInp.readLine();
+                                System.out.println("Otrzymano wiadomość: " + info);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             break;
                         case 3:
                             System.out.println("Wybrano opcję przelewu");
                             try {
                                 out.writeBytes(String.valueOf(option + '\n'));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            
+                            try {
+                                long account = Long.parseLong(brLocalInp.readLine());
+                                out.writeBytes(String.valueOf(account));
+                                System.out.println("Podaj sumę pieniędzy jaką chcesz jej przelać");
+                                double money1 = Double.parseDouble(brLocalInp.readLine());
+                                out.writeBytes(String.valueOf(money1));
+                                out.flush();
+                                info = brSockInp.readLine();
+                                System.out.println("Otrzymano wiadomość: " + info);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -108,6 +141,13 @@ public class Client {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            try {
+                                info = brSockInp.readLine();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("Otrzymano wiadomość: " + info);
+
                             break;
                         case 5:
                             System.out.println("Wylogowano");

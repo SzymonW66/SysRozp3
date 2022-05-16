@@ -84,18 +84,28 @@ public class Server {
                         switch (number) {
                             case 1:
                                 System.out.println("Wybrano opcję wypłaty");
+                                double money3 = Double.parseDouble(brinp.readLine());
+                                String message3 = withdrawMoney(line, money3, bankUsers);
+                                out.writeBytes(message3 + "\n\r");
                             case 2:
-                                System.out.println("Wybrano opcje wpłaty");
-                                //metoda
-                                //zwrot i gituwa
+                                 System.out.println("Wybrano opcje wpłaty");
+                                double money = Double.parseDouble(brinp.readLine());
+                                String message = depositMoney(line, money, bankUsers);
+                                out.writeBytes(message + "\n\r");
                             case 3:
                                 System.out.println("Wybrano opcję przelewu");
+                                double money1 = Double.parseDouble(brinp.readLine());
+                                long accountNumber = Long.parseLong(brinp.readLine());
+                                String message1 = transferMoney(line, money1, accountNumber, bankUsers);
+                                out.writeBytes(message1 + "\n\r");
                             case 4:
                                 System.out.println("Wybrano opcję sprawdzenia stanu konta");
+                                String message2 = checkAccount(line, bankUsers);
+                                out.writeBytes(message2 + "\n\r");
                             case 5:
                                 System.out.println("Wylogowano");
                         }
-                    } while ()
+                    } while (number != 5);
 //                    1-przelew
 //                            2-inna komenda
 //
@@ -124,13 +134,20 @@ public class Server {
         }
     }
 
+
+
     //...........
     static String depositMoney(String line, double money, ArrayList<BankUser> bankUsers) {
     BankUser currentPerson = findPerson(line, bankUsers);
         assert currentPerson != null;
         currentPerson.setMoney(currentPerson.getMoney() + money);
+         int index = bankUsers.indexOf(currentPerson);
+         bankUsers.set(index, currentPerson);
+      //   bankUsers.
+//zapisać nowego usera do Stringa i dodać do pliku txt
 
 
+        return "Pieniądze zostały wpłacone, saldo zwiększyło się o " + money + " zł";
     }
 
 
@@ -143,5 +160,7 @@ public class Server {
         }
         return null;
     }
+
+
 }
 

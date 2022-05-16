@@ -77,14 +77,6 @@ public class BankUser {
 
     @Override
     public String toString() {
-        return "BankUser{" +
-                "firstName='" + firstName + '\'' +
-                ", secondName='" + secondName + '\'' +
-                ", pesel='" + pesel + '\'' +
-                ", login='" + login + '\'' +
-                ", password='" + password + '\'' +
-                ", money=" + money +
-                ", accountNumber=" + accountNumber +
-                '}';
+        return firstName + ";" + secondName + ";" + pesel + ";" + login + ";" + password + ";" + money + ";" + accountNumber;
     }
 }
