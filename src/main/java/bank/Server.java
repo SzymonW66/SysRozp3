@@ -150,6 +150,39 @@ public class Server {
         return "Pieniądze zostały wpłacone, saldo zwiększyło się o " + money + " zł";
     }
 
+    static String withdrawMoney(String line, double money, ArrayList<BankUser> bankUsers) {
+        BankUser currentPerson = findPerson(line, bankUsers);
+        assert currentPerson != null;
+        currentPerson.setMoney(currentPerson.getMoney() - money);
+        int index = bankUsers.indexOf(currentPerson);
+        bankUsers.set(index, currentPerson);
+//zapisać nowego usera do Stringa i dodać do pliku txt
+        return "Pieniądze zostały przelane, saldo zwiększyło się o " + money + " zł";
+    }
+
+    static String transferMoney(String line, double money, long accountNumber, ArrayList<BankUser> bankUsers) {
+        BankUser currentPerson = findPerson(line, bankUsers);
+        assert currentPerson != null;
+        for (BankUser users: bankUsers) {
+            if (users.getAccountNumber() == (accountNumber)){
+                currentPerson.setMoney(currentPerson.getMoney() - money);
+                //dokończyć
+            }
+        }
+
+
+        currentPerson.setMoney(currentPerson.getMoney() - money);
+        int index = bankUsers.indexOf(currentPerson);
+        bankUsers.set(index, currentPerson);
+
+        return "Pieniądze zostały przelane, saldo zwiększyło się o " + money + " zł";
+    }
+
+    static String checkAccount(String line, ArrayList<BankUser> bankUsers){
+        BankUser currentPerson = findPerson(line, bankUsers);
+        assert currentPerson != null;
+        return currentPerson.toString();
+    }
 
 
    static BankUser findPerson(String lookingFor, ArrayList<BankUser> bankUsers) {
