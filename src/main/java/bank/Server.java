@@ -19,6 +19,7 @@ public class Server {
         BufferedReader brinp = null;
         DataOutputStream out = null;
         try {
+            //stworzenie nowego socketa (jednego)
             serverSocket = new ServerSocket(6666);
         } catch (IOException e) {
             System.out.println(
@@ -53,23 +54,59 @@ public class Server {
             System.out.println("Rozpoczęcie pętli głównej...");
 
             //pętla główna przyjmująca komunikaty od Client
-            while (true) {
-                try {
-                    String line = brinp.readLine();
-                    System.out.println("Odczytano linię: " + line);
+               while (true) {
+            try {
+                //odczytanie podanych lini przez serwer dla loginu i hasła
+                String resultTrue = "true";
+                String resultFalse = "false";
+                String login = brinp.readLine();
+                System.out.println("Odczytano login: " + login);
+                String password = brinp.readLine();
+                System.out.println("Odczytano hasło: " + password);
+                String line = login + ";" + password;
+                System.out.println(line);
 
-                    if (line == null || "quit".equals(line)) {
-                        socket.close();
-                        System.out.println("Zakończenie pracy z klientem...");
+                for (BankUser users : bankUsers) {
+                    if (line.equals(users.getLogin() + ";" + users.getPassword())) {
+                        out.writeBytes(resultTrue + "\n\r");
+                        System.out.println("Wysłano linię: " + resultTrue);
+                        break;
+                    } else {
+                        out.writeBytes(resultFalse + "\n\r");
+                        System.out.println("Wysłano linię: " + resultFalse);
                         break;
                     }
-                    out.writeBytes(line + "\n\r");
-                    System.out.println("Wysłano linię: " + line);
-                } catch (IOException e) {
-                    System.out.println("Błąd wejścia-wyjścia: " + e);
-                    break;
                 }
+                //zczytać numer do zmiennej który został wysłany
+
+
+
+
+//                    1-przelew
+//                            2-inna komenda
+//
+//                    while(true) //switch
+//                        switch
+//                            case 1
+//                                czekaj na dane potrzebne do 1
+//                                    br.read line --> extra
+//
+//                                case 2
+//                                    czeakj na dane potrzebne do 2
+//                                        br.ed extra
+//
+//                if (line == null || "quit".equals(line)) {
+//                   // socket.close();
+//                    System.out.println("Zakończenie pracy z klientem...");
+//                    break;
+//                }
+//                out.writeBytes(line + "\n\r");
+//                System.out.println("Wysłano linię: " + line);
+            } catch (IOException e) {
+                System.out.println("Błąd wejścia-wyjścia: " + e);
+
             }
+             }
         }
     }
 }
