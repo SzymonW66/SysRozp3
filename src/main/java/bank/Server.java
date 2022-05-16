@@ -54,17 +54,17 @@ public class Server {
             System.out.println("Rozpoczęcie pętli głównej...");
 
             //pętla główna przyjmująca komunikaty od Client
-               while (true) {
-            try {
-                //odczytanie podanych lini przez serwer dla loginu i hasła
-                String resultTrue = "true";
-                String resultFalse = "false";
-                String login = brinp.readLine();
-                System.out.println("Odczytano login: " + login);
-                String password = brinp.readLine();
-                System.out.println("Odczytano hasło: " + password);
-                String line = login + ";" + password;
-                System.out.println(line);
+            while (true) {
+                try {
+                    //odczytanie podanych lini przez serwer dla loginu i hasła
+                    String resultTrue = "true";
+                    String resultFalse = "false";
+                    String login = brinp.readLine();
+                    System.out.println("Odczytano login: " + login);
+                    String password = brinp.readLine();
+                    System.out.println("Odczytano hasło: " + password);
+                    String line = login + ";" + password;
+                    System.out.println(line);
 
                     for (BankUser users : bankUsers) {
                         if (line.equals(users.getLogin() + ";" + users.getPassword())) {
@@ -116,11 +116,11 @@ public class Server {
 //                }
 //                out.writeBytes(line + "\n\r");
 //                System.out.println("Wysłano linię: " + line);
-            } catch (IOException e) {
-                System.out.println("Błąd wejścia-wyjścia: " + e);
+                } catch (IOException e) {
+                    System.out.println("Błąd wejścia-wyjścia: " + e);
 
+                }
             }
-             }
         }
     }
 
