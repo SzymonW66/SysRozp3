@@ -66,22 +66,36 @@ public class Server {
                 String line = login + ";" + password;
                 System.out.println(line);
 
-                for (BankUser users : bankUsers) {
-                    if (line.equals(users.getLogin() + ";" + users.getPassword())) {
-                        out.writeBytes(resultTrue + "\n\r");
-                        System.out.println("Wysłano linię: " + resultTrue);
-                        break;
-                    } else {
-                        out.writeBytes(resultFalse + "\n\r");
-                        System.out.println("Wysłano linię: " + resultFalse);
-                        break;
+                    for (BankUser users : bankUsers) {
+                        if (line.equals(users.getLogin() + ";" + users.getPassword())) {
+                            out.writeBytes(resultTrue + "\n\r");
+                            System.out.println("Wysłano linię: " + resultTrue);
+                            break;
+                        } else {
+                            out.writeBytes(resultFalse + "\n\r");
+                            System.out.println("Wysłano linię: " + resultFalse);
+                            break;
+                        }
                     }
-                }
-                //zczytać numer do zmiennej który został wysłany
+                    int number = Integer.parseInt(brinp.readLine());
 
 
-
-
+                    do {
+                        switch (number) {
+                            case 1:
+                                System.out.println("Wybrano opcję wypłaty");
+                            case 2:
+                                System.out.println("Wybrano opcje wpłaty");
+                                //metoda
+                                //zwrot i gituwa
+                            case 3:
+                                System.out.println("Wybrano opcję przelewu");
+                            case 4:
+                                System.out.println("Wybrano opcję sprawdzenia stanu konta");
+                            case 5:
+                                System.out.println("Wylogowano");
+                        }
+                    } while ()
 //                    1-przelew
 //                            2-inna komenda
 //
@@ -108,6 +122,26 @@ public class Server {
             }
              }
         }
+    }
+
+    //...........
+    static String depositMoney(String line, double money, ArrayList<BankUser> bankUsers) {
+    BankUser currentPerson = findPerson(line, bankUsers);
+        assert currentPerson != null;
+        currentPerson.setMoney(currentPerson.getMoney() + money);
+
+
+    }
+
+
+
+   static BankUser findPerson(String lookingFor, ArrayList<BankUser> bankUsers) {
+         for (BankUser users: bankUsers) {
+            if((users.getLogin() + ";" + users.getPassword()).equals(lookingFor)) {
+                return users;
+            }
+        }
+        return null;
     }
 }
 

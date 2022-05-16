@@ -91,6 +91,7 @@ public class Client {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            //przyjecie z serwera info
                             break;
                         case 3:
                             System.out.println("Wybrano opcję przelewu");
