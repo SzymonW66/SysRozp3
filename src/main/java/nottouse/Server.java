@@ -1,4 +1,4 @@
-package bank;
+package nottouse;
 
 import database.FileManager;
 import model.BankUser;
@@ -13,7 +13,7 @@ public class Server {
     public static void main(String[] args) throws FileNotFoundException {
         FileManager fileManager = new FileManager();
         ArrayList<BankUser> bankUsers = fileManager.loadBankUsersFromFile();
-        System.out.println(bankUsers);
+       // System.out.println(bankUsers);
         ServerSocket serverSocket = null;
         Socket socket = null;
         BufferedReader brinp = null;

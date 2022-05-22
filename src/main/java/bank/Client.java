@@ -1,5 +1,6 @@
 package bank;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Client {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String host = "localhost";
         int port = 0;
         try {
@@ -39,7 +40,6 @@ public class Client {
         String info = null;
         String username = null; //Zmienna dla loginu
         String password = null; //Zmienna dla hasła
-        int option = 0;
         BufferedReader brSockInp = null;
         BufferedReader brLocalInp = null;
         DataOutputStream out = null;
@@ -59,105 +59,93 @@ public class Client {
         //Pętla główna klienta
         while (true) {
             //pobranie danych logowania, wysłania na serwer i odebranie true albo false
-          boolean validate = userLogin(username, password, line, out, brLocalInp, brSockInp, clientSocket);
-            if (validate == true) {
-                System.out.println("1 - Wypłać pieniądze");
-                System.out.println("2 - Wpłać pieniądze");
-                System.out.println("3 - Wykonaj przelew");
-                System.out.println("4 - Sprawdź stan konta");
-                System.out.println("5 - Exit");
-                System.out.println("Proszę wybrać jedną z opcji: ");
-                try {
-                   option = Integer.parseInt(brLocalInp.readLine());
+            System.out.println("Witaj w progamie Bankowym!");
+            System.out.println("Podaj swój login: ");
+            username = brLocalInp.readLine();
+            System.out.println("Podaj swoje hasło: ");
+            password = brLocalInp.readLine();
+            boolean validate = false;
+            validate = userLogin(username, password, out, brLocalInp, brSockInp, clientSocket);
 
-                } catch (IOException e) {
+            if (validate == true) {
+
+                try {
+                    String option = null;
+                    do {
+                        printOptions();
+                        option = brLocalInp.readLine();
+                        out.writeBytes(option + "\n");
+                        out.flush();
+                        System.out.println("Wysyłam do serwera numer: " + option);
+                        switch (option) {
+                            case "1":
+                                System.out.println("Wybrano opcję wypłaty");
+                                System.out.println("Podaj ile chcesz wypłacić pieniędzy ");
+                                try {
+                                    double money = Double.parseDouble(brLocalInp.readLine());
+                                    out.writeBytes(money + "\n");
+                                    out.flush();
+                                    info = brSockInp.readLine();
+                                    System.out.println("Otrzymano wiadomość: " + info);
+                                    break;
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case "2":
+                                System.out.println("Wybrano opcję wpłaty");
+                                System.out.println("Podaj ile chcesz wpłacić pieniędzy ");
+                                try {
+                                    double money1 = Double.parseDouble(brLocalInp.readLine());
+                                    out.writeBytes(money1 + "\n");
+                                    out.flush();
+                                    info = brSockInp.readLine();
+                                    System.out.println("Otrzymano wiadomość: " + info);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case "3":
+                                System.out.println("Wybrano opcję przelewu");
+                                try {
+                                    out.writeBytes(String.valueOf(option + '\n'));
+                                    out.flush();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                try {
+                                    long account = Long.parseLong(brLocalInp.readLine());
+                                    out.writeBytes(String.valueOf(account));
+                                    System.out.println("Podaj sumę pieniędzy jaką chcesz jej przelać");
+                                    double money1 = Double.parseDouble(brLocalInp.readLine());
+                                    out.writeBytes(String.valueOf(money1));
+                                    out.flush();
+                                    info = brSockInp.readLine();
+                                    System.out.println("Otrzymano wiadomość: " + info);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            case "4":
+                                System.out.println("Wybrano opcję sprawdzenia stanu konta");
+                                String info4 = brSockInp.readLine();
+                                System.out.println("Informacje o Twoim koncie: " + info4);
+                                break;
+                            case "5":
+                                System.out.println("Wylogowano");
+                                break;
+
+                        }
+                    } while (option != "5");
+
+
+                } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
 
-                do{
-                    switch (option) {
-                        case 1:
-                            System.out.println("Wybrano opcję wypłaty");
-                            try {
-                                out.writeBytes(String.valueOf(option + '\n'));
-                                System.out.println("Wysyłam numer" + option);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            System.out.println("Podaj ile chcesz wypłacić pieniędzy ");
-                            try {
-                                double money = Double.parseDouble(brLocalInp.readLine());
-                                out.writeBytes(String.valueOf(money));
-                                out.flush();
-                                info = brSockInp.readLine();
-                                System.out.println("Otrzymano wiadomość: " + info);
-                                break;
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        case 2:
-                            System.out.println("Wybrano opcję wpłaty");
-                            try {
-                                out.writeBytes(String.valueOf(option + '\n'));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            System.out.println("Podaj ile chcesz wpłacić pieniędzy ");
-                            try {
-                                double money1 = Double.parseDouble(brLocalInp.readLine());
-                                out.writeBytes(String.valueOf(money1));
-                                out.flush();
-                                info = brSockInp.readLine();
-                                System.out.println("Otrzymano wiadomość: " + info);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        case 3:
-                            System.out.println("Wybrano opcję przelewu");
-                            try {
-                                out.writeBytes(String.valueOf(option + '\n'));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            
-                            try {
-                                long account = Long.parseLong(brLocalInp.readLine());
-                                out.writeBytes(String.valueOf(account));
-                                System.out.println("Podaj sumę pieniędzy jaką chcesz jej przelać");
-                                double money1 = Double.parseDouble(brLocalInp.readLine());
-                                out.writeBytes(String.valueOf(money1));
-                                out.flush();
-                                info = brSockInp.readLine();
-                                System.out.println("Otrzymano wiadomość: " + info);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        case 4:
-                            System.out.println("Wybrano opcję sprawdzenia stanu konta");
-                            try {
-                                out.writeBytes(String.valueOf(option + '\n'));
-                                info = brSockInp.readLine();
-                                System.out.println("Otrzymano wiadomość: " + info);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        case 5:
-                            System.out.println("Wylogowano");
 
-                            break;
-                        default:
-                            System.out.println("dfxfxcvxcv");
-                    }
-                } while (option != 5);
-
-
-            }
-            else
-            {
+            } else {
                 System.out.println("Niepoprawne dane logowania");
                 try {
                     clientSocket.close();
@@ -166,44 +154,47 @@ public class Client {
                 }
                 System.exit(0);
             }
-
         }
-
-
     }
 
-    public static Boolean userLogin(String username, String password, String line, DataOutputStream out, BufferedReader brLocalInp, BufferedReader brSockInp, Socket clientSocket) {
+    public static boolean userLogin(String username, String password, DataOutputStream out, BufferedReader brLocalInp, BufferedReader brSockInp, Socket clientSocket) {
         boolean result = false;
+        String line = null;
         try {
-            System.out.println("Witaj w progamie Bankowym!");
-            System.out.println("Podaj swój login: ");
-            username = brLocalInp.readLine();
-            System.out.println("Podaj swoje hasło: ");
-            password = brLocalInp.readLine();
             if (password != null && username != null) {
                 System.out.println("Wysyłam: " + username + " " + password);
                 out.writeBytes(username + '\n');
                 out.writeBytes(password + '\n');
                 out.flush();
+                line = brSockInp.readLine();
+                System.out.println("Otrzymano : " + line);
+
             }
             if (password == null || username == null) {
                 System.out.println("Kończenie pracy...");
                 clientSocket.close();
                 System.exit(0);
             }
-
-            line = brSockInp.readLine();
-            System.out.println("Otrzymano : " + line);
-            if (line == "true") {
-                result = true;
-            }
         } catch (IOException e) {
             System.out.println("Błąd wejścia-wyjścia: " + e);
             System.exit(-1);
         }
+        if (line.equals("true")) {
+            result = true;
+        } else if (line.equals("false")) {
+            result = false;
+        }
 
+        return result;
+    }
 
-        return true;
+    public static void printOptions() {
+        System.out.println("1 - Wypłać pieniądze");
+        System.out.println("2 - Wpłać pieniądze");
+        System.out.println("3 - Wykonaj przelew");
+        System.out.println("4 - Sprawdź stan konta");
+        System.out.println("5 - Exit");
+        System.out.println("Proszę wybrać jedną z opcji: ");
     }
 
 
