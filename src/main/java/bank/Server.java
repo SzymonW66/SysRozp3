@@ -70,15 +70,15 @@ public class Server {
                         if (line.equals(users.getLogin() + ";" + users.getPassword())) {
                             out.writeBytes(resultTrue + "\n\r");
                             System.out.println("Wysłano linię: " + resultTrue);
-                            break;
                         } else {
                             out.writeBytes(resultFalse + "\n\r");
                             System.out.println("Wysłano linię: " + resultFalse);
-                            break;
                         }
+                        break;
                     }
-                    int number = Integer.parseInt(brinp.readLine());
 
+                    int number = Integer.parseInt(brinp.readLine());
+                    System.out.println("Wybrano numer " + number);
 
                     do {
                         switch (number) {
@@ -87,23 +87,33 @@ public class Server {
                                 double money3 = Double.parseDouble(brinp.readLine());
                                 String message3 = withdrawMoney(line, money3, bankUsers);
                                 out.writeBytes(message3 + "\n\r");
+                                socket.close();
+                                break;
                             case 2:
                                  System.out.println("Wybrano opcje wpłaty");
                                 double money = Double.parseDouble(brinp.readLine());
                                 String message = depositMoney(line, money, bankUsers);
                                 out.writeBytes(message + "\n\r");
+                                break;
                             case 3:
                                 System.out.println("Wybrano opcję przelewu");
                                 double money1 = Double.parseDouble(brinp.readLine());
                                 long accountNumber = Long.parseLong(brinp.readLine());
                                 String message1 = transferMoney(line, money1, accountNumber, bankUsers);
                                 out.writeBytes(message1 + "\n\r");
+                                break;
                             case 4:
                                 System.out.println("Wybrano opcję sprawdzenia stanu konta");
                                 String message2 = checkAccount(line, bankUsers);
                                 out.writeBytes(message2 + "\n\r");
+                                socket.close();
+                                break;
                             case 5:
+                                socket.close();
                                 System.out.println("Wylogowano");
+                                break;
+                            default:
+                                System.out.println("usdhfiusdhfiu");
                         }
                     } while (number != 5);
 //                    1-przelew

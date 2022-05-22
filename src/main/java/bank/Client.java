@@ -91,6 +91,7 @@ public class Client {
                                 out.flush();
                                 info = brSockInp.readLine();
                                 System.out.println("Otrzymano wiadomość: " + info);
+                                break;
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -138,21 +139,18 @@ public class Client {
                             System.out.println("Wybrano opcję sprawdzenia stanu konta");
                             try {
                                 out.writeBytes(String.valueOf(option + '\n'));
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            try {
                                 info = brSockInp.readLine();
+                                System.out.println("Otrzymano wiadomość: " + info);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            System.out.println("Otrzymano wiadomość: " + info);
-
                             break;
                         case 5:
                             System.out.println("Wylogowano");
 
                             break;
+                        default:
+                            System.out.println("dfxfxcvxcv");
                     }
                 } while (option != 5);
 
