@@ -77,9 +77,14 @@ public class EchoServerThread implements Runnable {
                             break;
                         case "2":
                             System.out.println("Wybrano opcje wpłaty");
-                            double money = Double.parseDouble(brinp.readLine());
-                            String message = depositMoney(line, money, bankUsers);
-                            out.writeBytes(message + "\n\r");
+                            String money = brinp.readLine();
+                            if (money.length() == 0)
+                            money = brinp.readLine();
+                            System.out.println(money);
+                            System.out.println(money.getClass().getName());
+                            depositMoney(line, money, bankUsers);
+                            out.writeBytes("Poprawno wpłacono hajs, dziękujemy" + "\n\r");
+                           // out.writeBytes(message + "\n\r");
                             break;
                         case "3":
                             System.out.println("Wybrano opcję przelewu");
@@ -92,8 +97,10 @@ public class EchoServerThread implements Runnable {
                             //TODO Tutaj za drugim razem daje informacje do client
                             System.out.println("Wybrano opcję sprawdzenia stanu konta");
                             String message2 = checkAccount(line, bankUsers);
-                            out.writeBytes(message2 + "\n");
+                            System.out.println(message2);
+                            out.writeBytes(message2 + "\n\r");
                             out.flush();
+                            System.out.println("Informacja o koncie została wysłana " + message2);
                             break;
                         case "5":
                             socket.close();
@@ -110,17 +117,17 @@ public class EchoServerThread implements Runnable {
         }
     }
 
-    static String depositMoney(String line, double money, ArrayList<BankUser> bankUsers) {
+    static void depositMoney(String line, String money, ArrayList<BankUser> bankUsers) {
+        FileManager fileManager = new FileManager();
         BankUser currentPerson = findPerson(line, bankUsers);
         assert currentPerson != null;
-        currentPerson.setMoney(currentPerson.getMoney() + money);
+        double money1 = Double.parseDouble(money);
+        currentPerson.setMoney(currentPerson.getMoney() + money1);
         int index = bankUsers.indexOf(currentPerson);
         bankUsers.set(index, currentPerson);
-        //   bankUsers.
-//zapisać nowego usera do Stringa i dodać do pliku txt
+        fileManager.saveBankUsersToFile(bankUsers);
 
 
-        return "Pieniądze zostały wpłacone, saldo zwiększyło się o " + money + " zł";
     }
 
     static String withdrawMoney(String line, double money, ArrayList<BankUser> bankUsers) {
@@ -129,8 +136,8 @@ public class EchoServerThread implements Runnable {
         currentPerson.setMoney(currentPerson.getMoney() - money);
         int index = bankUsers.indexOf(currentPerson);
         bankUsers.set(index, currentPerson);
-//zapisać nowego usera do Stringa i dodać do pliku txt
-        return "Pieniądze zostały przelane, saldo zwiększyło się o " + money + " zł";
+
+        return "Pieniądze zostały przelane, saldo zmnijeszyło się o " + money + " zł";
     }
 
     static String transferMoney(String line, double money, long accountNumber, ArrayList<BankUser> bankUsers) {
@@ -150,9 +157,11 @@ public class EchoServerThread implements Runnable {
     }
 
     static String checkAccount(String line, ArrayList<BankUser> bankUsers) {
+        String info = null;
         BankUser currentPerson = findPerson(line, bankUsers);
         assert currentPerson != null;
-        return currentPerson.toString();
+        info = currentPerson.toString();
+        return info;
     }
 
 

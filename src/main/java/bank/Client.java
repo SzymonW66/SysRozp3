@@ -74,7 +74,7 @@ public class Client {
                     do {
                         printOptions();
                         option = brLocalInp.readLine();
-                        out.writeBytes(option + "\n");
+                        out.writeBytes(option + "\n\r");
                         out.flush();
                         System.out.println("Wysyłam do serwera numer: " + option);
                         switch (option) {
@@ -99,8 +99,8 @@ public class Client {
                                     double money1 = Double.parseDouble(brLocalInp.readLine());
                                     out.writeBytes(money1 + "\n");
                                     out.flush();
-                                    info = brSockInp.readLine();
-                                    System.out.println("Otrzymano wiadomość: " + info);
+                                    String info2 = brSockInp.readLine();
+                                    System.out.println(info2);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -130,7 +130,11 @@ public class Client {
                             case "4":
                                 System.out.println("Wybrano opcję sprawdzenia stanu konta");
                                 String info4 = brSockInp.readLine();
+                                //System.out.println(info4.length());
+                                if (info4.length() == 0)
+                                    info4 = brSockInp.readLine();
                                 System.out.println("Informacje o Twoim koncie: " + info4);
+
                                 break;
                             case "5":
                                 System.out.println("Wylogowano");

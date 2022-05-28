@@ -42,5 +42,23 @@ public class FileManager {
         double money = Double.parseDouble(split[6]);
         return new BankUser(firstName, lastName, pesel, login, password, money, accountNumber);
     }
+
+    public void saveBankUsersToFile(ArrayList<BankUser> bankUsers) {
+        try {
+            FileWriter writer = new FileWriter(FILE_PATH);
+            bankUsers.forEach(bankUser -> {
+                try{
+                    writer.write(bankUser.getFirstName() + ";" + bankUser.getSecondName() + ";" + bankUser.getPesel() + ";" + bankUser.getLogin() + ";" + bankUser.getPassword() + ";" + bankUser.getMoney() + ";" + bankUser.getAccountNumber() + "\n");
+                } catch (IOException e) {
+                    System.err.println("Coś się popsuło");
+                }
+            });
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
 
