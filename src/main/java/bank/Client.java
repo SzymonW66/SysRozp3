@@ -85,9 +85,13 @@ public class Client {
                                     double money = Double.parseDouble(brLocalInp.readLine());
                                     out.writeBytes(money + "\n");
                                     out.flush();
-                                    info = brSockInp.readLine();
-                                    System.out.println("Otrzymano wiadomość: " + info);
-                                    break;
+                                    String info6 = brSockInp.readLine();
+                                    System.out.println(info6.length());
+                                    if (info6.length() == 0) {
+                                        info6 = brSockInp.readLine();
+                                    }
+                                    System.out.println("Otrzymano wiadomość: " + info6);
+
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -100,6 +104,10 @@ public class Client {
                                     out.writeBytes(money1 + "\n");
                                     out.flush();
                                     String info2 = brSockInp.readLine();
+                                    System.out.println(info2.length());
+                                    if (info2.length() == 0) {
+                                        info2 = brSockInp.readLine();
+                                    }
                                     System.out.println(info2);
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -108,33 +116,43 @@ public class Client {
                             case "3":
                                 System.out.println("Wybrano opcję przelewu");
                                 try {
-                                    out.writeBytes(String.valueOf(option + '\n'));
+                                    System.out.println("Podaj ile chcesz przleać pieniędzy");
+                                    double money1 = Double.parseDouble(brLocalInp.readLine());
+                                    out.writeBytes(money1 + "\n");
                                     out.flush();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                    System.out.println("Podaj numer konta odbiory przelewu");
+                                    String accountNumber = brLocalInp.readLine();
+                                    out.writeBytes(accountNumber + "\n");
+                                    out.flush();
+
+                                    String info3 = brSockInp.readLine();
+                                    System.out.println(info3.length());
+                                    if (info3.length() == 0) {
+                                        info3 = brSockInp.readLine();
+                                    }
+                                    if (info3.equals("True")){
+                                        System.out.println("Przelew został wykonany poprawnie");
+                                        break;
+                                    }
+                                    else if (info3.equals("False")) {
+                                        System.out.println("Przelew nie został wykonany pomyślnie, sprawdź numer konta i czy wpisałeś ilość pieniedzy bez poprzedającego go znaku minus");
+                                        break;
+                                    }
+
+
+
+                                }catch (Exception e){
+                                    System.out.println("bład");
                                 }
 
-                                try {
-                                    long account = Long.parseLong(brLocalInp.readLine());
-                                    out.writeBytes(String.valueOf(account));
-                                    System.out.println("Podaj sumę pieniędzy jaką chcesz jej przelać");
-                                    double money1 = Double.parseDouble(brLocalInp.readLine());
-                                    out.writeBytes(String.valueOf(money1));
-                                    out.flush();
-                                    info = brSockInp.readLine();
-                                    System.out.println("Otrzymano wiadomość: " + info);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
                                 break;
                             case "4":
                                 System.out.println("Wybrano opcję sprawdzenia stanu konta");
                                 String info4 = brSockInp.readLine();
-                                //System.out.println(info4.length());
+                                //System.out.println(info4.length()); Zrobione przez Pana
                                 if (info4.length() == 0)
                                     info4 = brSockInp.readLine();
                                 System.out.println("Informacje o Twoim koncie: " + info4);
-
                                 break;
                             case "5":
                                 System.out.println("Wylogowano");

@@ -7,9 +7,9 @@ public class BankUser {
     private String login;
     private String password;
     private double money;
-    private long accountNumber;
+    private String accountNumber;
 
-    public BankUser(String firstName, String secondName, String pesel, String login, String password, double money, long accountNumber) {
+    public BankUser(String firstName, String secondName, String pesel, String login, String password, double money, String accountNumber) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.pesel = pesel;
@@ -67,11 +67,11 @@ public class BankUser {
         this.money = money;
     }
 
-    public long getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(long accountNumber) {
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 
@@ -79,4 +79,6 @@ public class BankUser {
     public String toString() {
         return firstName + ";" + secondName + ";" + pesel + ";" + login + ";" + password + ";" + money + ";" + accountNumber;
     }
+
+    //account number ma być na końcu
 }

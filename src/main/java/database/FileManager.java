@@ -38,8 +38,8 @@ public class FileManager {
         String pesel = split[2];
         String login = split[3];
         String password = split[4];
-        long accountNumber = Long.parseLong(split[5]);
-        double money = Double.parseDouble(split[6]);
+        double money = Double.parseDouble(split[5]);
+        String accountNumber = split[6];
         return new BankUser(firstName, lastName, pesel, login, password, money, accountNumber);
     }
 
