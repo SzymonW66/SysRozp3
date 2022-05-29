@@ -130,18 +130,22 @@ public class Client {
                                     if (info3.length() == 0) {
                                         info3 = brSockInp.readLine();
                                     }
-                                    if (info3.equals("True")){
+                                    if (info3.equals("Sukces")) {
                                         System.out.println("Przelew został wykonany poprawnie");
                                         break;
-                                    }
-                                    else if (info3.equals("False")) {
-                                        System.out.println("Przelew nie został wykonany pomyślnie, sprawdź numer konta i czy wpisałeś ilość pieniedzy bez poprzedającego go znaku minus");
+                                    } else if (info3.equals("Za mało pieniędzy na koncie")) {
+                                        System.out.println("Przelew nie został wykonany pomyślnie, za mało piniędzy na koncie");
+                                        break;
+                                    } else if (info3.equals("Minus money")) {
+                                        System.out.println("Przelew nie został wykonany pomyślnie, podano ujemną wartość pieniędzy do przelania");
+                                        break;
+                                    } else if (info3.equals("Your number")) {
+                                        System.out.println("Przelew nie został wykonany pomyślnie, podano swój własny numer konta ");
                                         break;
                                     }
 
 
-
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     System.out.println("bład");
                                 }
 

@@ -70,36 +70,57 @@ public class EchoServerThread implements Runnable {
 
                     switch (downloadString) {
                         case "1":
-                            //  String message3 = "Wypłacono";
+
                             System.out.println("Wybrano opcję wypłaty");
                             String money3 = brinp.readLine();
                             if (money3.length() == 0) {
                                 money3 = brinp.readLine();
                             }
-                            boolean info = withdrawMoney(line, money3, bankUsers);
-                            if (info == true) {
-                                System.out.println("pierwszy warunek " + withdrawMoney(line, money3, bankUsers));
-                                out.writeBytes("True" + "\n\r");
-                                System.out.println("Zostało wysłane True");
-                                out.flush();
-                                break;
-                            } else {
-                                System.out.println("Za mało pieniędzy na koncie");
-                                out.writeBytes("False" + "\n\r");
-                                out.flush();
-                                break;
+                            double moneyCheck1 = Double.parseDouble(money3);
+                            if (moneyCheck1 > 0) {
+                                boolean info = withdrawMoney(line, money3, bankUsers);
+                                if (info == true) {
+                                    System.out.println("pierwszy warunek " + withdrawMoney(line, money3, bankUsers));
+                                    out.writeBytes("True" + "\n\r");
+                                    System.out.println("Zostało wysłane True");
+                                    out.flush();
+                                    break;
+                                }
+                                else {
+                                    System.out.println("Za mało pieniędzy na koncie");
+                                    out.writeBytes("Za mało pieniędzy na koncie " + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
                             }
+                            else
+                                System.out.println("Podano ujemną wartość");
+                                out.writeBytes("Podano ujemną wartość piniędzy, niepowodzenie" + "\n\r");
+                                out.flush();
+                                break;
+
 
                         case "2":
                             String message = "Wpłacono";
+                            String message6= "Niepowodzenie, przy wpłacie. Podano ujemną wartość ";
                             System.out.println("Wybrano opcje wpłaty");
                             String money = brinp.readLine();
+
                             if (money.length() == 0)
                                 money = brinp.readLine();
-                            depositMoney(line, money, bankUsers);
-                            System.out.println("Pieniądze zostały wpłacone wysyłam wiadomość");
-                            out.writeBytes(message + "\n\r");
-                            break;
+                            double moneyCheck = Double.parseDouble(money);
+                            if (moneyCheck > 0) {
+                                depositMoney(line, money, bankUsers);
+                                System.out.println("Pieniądze zostały wpłacone wysyłam wiadomość");
+                                out.writeBytes(message + "\n\r");
+                                break;
+                            }
+                            else
+                                System.out.println("Pieniądze nie zostały wpłacone wysyłam wiadomość");
+                            out.writeBytes(message6);
+
+
+
                         case "3":
                             System.out.println("Wybrano opcję przelewu");
                             String money1 = brinp.readLine();
@@ -109,20 +130,29 @@ public class EchoServerThread implements Runnable {
                             if (accountNumberOfRecipent.length() == 0)
                                 accountNumberOfRecipent = brinp.readLine();
 
-                            boolean message1 = transferMoney(line, money1, accountNumberOfRecipent, bankUsers);
+                            String message1 = transferMoney(line, money1, accountNumberOfRecipent, bankUsers);
 
-                            if (message1 == true) {
+                            if (message1 == "Sukces") {
                                 System.out.println("Przelew wykonano pomyślnie");
                                 out.writeBytes("True" + "\n\r");
                                 out.flush();
                                 break;
-
-                            } else
-                                System.out.println("Przelew nie został wykonany pomyślnie, sprawdź numer konta i czy wpisałeś ilość pieniedzy bez poprzedającego go znaku minus");
-                            out.writeBytes("False" + "\n\r");
-                            out.flush();
-                            break;
-
+                            } else if (message1 == "Za mało pieniędzy na koncie") {
+                                System.out.println("Za mało pieniędzy na koncie, aby wykonać przelew");
+                                out.writeBytes("Za mało pieniędzy na koncie" + "\n\r");
+                                out.flush();
+                                break;
+                            } else if (message1 == "Minus money") {
+                                System.out.println("Podano ujemną wartość piniędzy do przlania");
+                                out.writeBytes("Minus money" + "\n\r");
+                                out.flush();
+                                break;
+                            } else if (message1 == "Your number") {
+                                System.out.println("Podano swój numer konta");
+                                out.writeBytes("Your number" + "\n\r");
+                                out.flush();
+                                break;
+                            }
 
                         case "4":
                             System.out.println("Wybrano opcję sprawdzenia stanu konta");
@@ -156,8 +186,6 @@ public class EchoServerThread implements Runnable {
         int index = bankUsers.indexOf(currentPerson);
         bankUsers.set(index, currentPerson);
         fileManager.saveBankUsersToFile(bankUsers);
-
-
     }
 
     static boolean withdrawMoney(String line, String money, ArrayList<BankUser> bankUsers) {
@@ -165,7 +193,7 @@ public class EchoServerThread implements Runnable {
         BankUser currentPerson = findPerson(line, bankUsers);
         assert currentPerson != null;
         double money1 = Double.parseDouble(money);
-        if (money1 > 0){
+        if (money1 > 0) {
             if (currentPerson.getMoney() >= money1) {
                 currentPerson.setMoney(currentPerson.getMoney() - money1);
                 int index = bankUsers.indexOf(currentPerson);
@@ -177,20 +205,22 @@ public class EchoServerThread implements Runnable {
                 System.out.println("Nie zostało wykonane poprawnie, nie posiadasz takich pieniedzy na koncie");
                 return false;
             }
-        }
-
-else
-    return false;
+        } else
+            return false;
     }
 
-    static boolean transferMoney(String line, String money, String accountNumber, ArrayList<BankUser> bankUsers) {
+    static String transferMoney(String line, String money, String accountNumber, ArrayList<BankUser> bankUsers) {
+        String messeageSucces = "Sukces";
+        String yourNumber = "Your number";
+        String minusMoney = "Minus money";
+        String tooLowAmount = "Za mało pieniędzy na koncie";
         FileManager fileManager = new FileManager();
         BankUser currentPerson = findPerson(line, bankUsers);
         BankUser transferRecipient = findPersonByNumberAccount(accountNumber, bankUsers);
         assert currentPerson != null;
         assert transferRecipient != null;
         double money1 = Double.parseDouble(money);
-        if(!Objects.equals(accountNumber, currentPerson.getAccountNumber())){
+        if (!Objects.equals(accountNumber, currentPerson.getAccountNumber())) {
             if (money1 > 0) {
                 if (currentPerson.getMoney() >= money1) {
                     currentPerson.setMoney(currentPerson.getMoney() - money1);
@@ -200,19 +230,17 @@ else
                     bankUsers.set(index, currentPerson);
                     bankUsers.set(index1, transferRecipient);
                     fileManager.saveBankUsersToFile(bankUsers);
-                    System.out.println("Zwracam true");
-                    return true;
+                    System.out.println("Zwracam Sukces");
+                    return messeageSucces;
                 } else
-                    return false;
-            }
-            else
-                return false;
-        }
-        else
-            return false;
+                    return tooLowAmount;
+            } else
+                return minusMoney;
+        } else
+            return yourNumber;
     }
 // zastanowić się nad zmianą typu na String i obsługiwać potem w kliencie to co się tam odjaniepawla
- //   static boolean doesExist(String lookingFor,)
+    //   static boolean doesExist(String lookingFor,)
 
     static String checkAccount(String line, ArrayList<BankUser> bankUsers) {
         String info = null;
@@ -247,7 +275,7 @@ else
 
     //TODO POBOCZNE
 
-    //TODO zrobić case 3 (przelew, naprawić wszystko pod String pozna money)
+
 
     //serwer na pare kilentów zrobiony
     //switche działają
