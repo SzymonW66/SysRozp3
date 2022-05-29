@@ -58,6 +58,15 @@ public class Client {
         }
         //Pętla główna klienta
         while (true) {
+            //Wysłanie wiadomości że to jest aplikacja kliencka
+            String message = "Client";
+            out.writeBytes(message + "\n"); // dodać ewentualnie /r
+            out.flush();
+            System.out.println(message);
+            System.out.println("Wysłano informację że jest to aplikacja kliencka");
+            String info9 = brSockInp.readLine();
+            System.out.println(info9);
+
             //pobranie danych logowania, wysłania na serwer i odebranie true albo false
             System.out.println("Witaj w progamie Bankowym!");
             System.out.println("Podaj swój login: ");
@@ -74,7 +83,7 @@ public class Client {
                     do {
                         printOptions();
                         option = brLocalInp.readLine();
-                        out.writeBytes(option + "\n\r");
+                        out.writeBytes(option + "\n"); //dodać ew \r
                         out.flush();
                         System.out.println("Wysyłam do serwera numer: " + option);
                         switch (option) {
@@ -173,12 +182,12 @@ public class Client {
 
             } else {
                 System.out.println("Niepoprawne dane logowania");
-                try {
-                    clientSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.exit(0);
+//                try {
+//                    //clientSocket.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                System.exit(0);
             }
         }
     }
@@ -189,8 +198,8 @@ public class Client {
         try {
             if (password != null && username != null) {
                 System.out.println("Wysyłam: " + username + " " + password);
-                out.writeBytes(username + '\n');
-                out.writeBytes(password + '\n');
+                out.writeBytes(username + "\n");
+                out.writeBytes(password + "\n");
                 out.flush();
                 line = brSockInp.readLine();
                 System.out.println("Otrzymano : " + line);

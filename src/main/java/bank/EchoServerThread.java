@@ -1,6 +1,7 @@
 package bank;
 
 import database.FileManager;
+import model.Administrator;
 import model.BankUser;
 
 import java.io.*;
@@ -20,6 +21,7 @@ public class EchoServerThread implements Runnable {
         BufferedReader brinp = null;
         FileManager fileManager = new FileManager();
         ArrayList<BankUser> bankUsers = fileManager.loadBankUsersFromFile();
+        Administrator administrator = new Administrator();
         DataOutputStream out = null;
         String threadName = Thread.currentThread().getName();
 
@@ -39,140 +41,193 @@ public class EchoServerThread implements Runnable {
         //główna pętla
         while (true) {
             try {
-                //odczytanie podanych lini przez serwer dla loginu i hasła
-                String resultTrue = "true";
-                String resultFalse = "false";
-                String login = brinp.readLine();
-                System.out.println("Odczytano login: " + login);
-                String password = brinp.readLine();
-                System.out.println("Odczytano hasło: " + password);
-                String line = login + ";" + password;
-                System.out.println(line);
+                String starterMessage = brinp.readLine();
+                System.out.println(starterMessage);
+                String connected = "Zostałeś połączony poprawnie";
+                out.writeBytes(connected + "\n");
 
-                for (BankUser users : bankUsers) {
-                    if (line.equals(users.getLogin() + ";" + users.getPassword())) {
-                        out.writeBytes(resultTrue + "\n\r");
-                        out.flush();
-                        System.out.println("Wysłano linię: " + resultTrue);
-                        break;
-                    } else {
-                        out.writeBytes(resultFalse + "\n\r");
-                        out.flush();
-                        System.out.println("Wysłano linię: " + resultFalse);
+            if (starterMessage.equals("Client") ) {
+                try {
+                    System.out.println("Rozpoczynam logowanie");
+                    //odczytanie podanych lini przez serwer dla loginu i hasła
+                    String resultTrue = "true";
+                    String resultFalse = "false";
+                    String login = brinp.readLine();
+                    System.out.println("Odczytano login: " + login);
+                    String password = brinp.readLine();
+                    System.out.println("Odczytano hasło: " + password);
+                    String line = login + ";" + password;
+                    System.out.println(line);
+
+                    for (BankUser users : bankUsers) {
+                        if (line.equals(users.getLogin() + ";" + users.getPassword())) {
+                            out.writeBytes(resultTrue + "\n\r");
+                            out.flush();
+                            System.out.println("Wysłano linię: " + resultTrue);
+                            break;
+                        } else {
+                            out.writeBytes(resultFalse + "\n\r");
+                            out.flush();
+                            System.out.println("Wysłano linię: " + resultFalse);
+                        }
                     }
-                }
-                System.out.println("Pętla true/false się zakończyła, rozpoczynam głóną pętlę");
+                    System.out.println("Pętla true/false się zakończyła, rozpoczynam głóną pętlę");
 
-                String downloadString = null;
-                do {
-                    downloadString = brinp.readLine();
-                    System.out.println("Wybrano numer " + downloadString);
+                    String downloadString = null;
+                    do {
+                        downloadString = brinp.readLine();
+                        System.out.println("Wybrano numer " + downloadString);
 
-                    switch (downloadString) {
-                        case "1":
+                        switch (downloadString) {
+                            case "1":
 
-                            System.out.println("Wybrano opcję wypłaty");
-                            String money3 = brinp.readLine();
-                            if (money3.length() == 0) {
-                                money3 = brinp.readLine();
-                            }
-                            double moneyCheck1 = Double.parseDouble(money3);
-                            if (moneyCheck1 > 0) {
-                                boolean info = withdrawMoney(line, money3, bankUsers);
-                                if (info == true) {
-                                    System.out.println("pierwszy warunek " + withdrawMoney(line, money3, bankUsers));
-                                    out.writeBytes("True" + "\n\r");
-                                    System.out.println("Zostało wysłane True");
-                                    out.flush();
-                                    break;
+                                System.out.println("Wybrano opcję wypłaty");
+                                String money3 = brinp.readLine();
+                                if (money3.length() == 0) {
+                                    money3 = brinp.readLine();
                                 }
-                                else {
-                                    System.out.println("Za mało pieniędzy na koncie");
-                                    out.writeBytes("Za mało pieniędzy na koncie " + "\n\r");
-                                    out.flush();
-                                    break;
-                                }
-                            }
-                            else
-                                System.out.println("Podano ujemną wartość");
+                                double moneyCheck1 = Double.parseDouble(money3);
+                                if (moneyCheck1 > 0) {
+                                    boolean info = withdrawMoney(line, money3, bankUsers);
+                                    if (info == true) {
+
+                                        out.writeBytes("True" + "\n\r");
+                                        System.out.println("Zostało wysłane True");
+                                        out.flush();
+                                        break;
+                                    } else {
+                                        System.out.println("Za mało pieniędzy na koncie");
+                                        out.writeBytes("Za mało pieniędzy na koncie " + "\n\r");
+                                        out.flush();
+                                        break;
+                                    }
+                                } else
+                                    System.out.println("Podano ujemną wartość");
                                 out.writeBytes("Podano ujemną wartość piniędzy, niepowodzenie" + "\n\r");
                                 out.flush();
                                 break;
 
 
-                        case "2":
-                            String message = "Wpłacono";
-                            String message6= "Niepowodzenie, przy wpłacie. Podano ujemną wartość ";
-                            System.out.println("Wybrano opcje wpłaty");
-                            String money = brinp.readLine();
+                            case "2":
+                                String message = "Wpłacono";
+                                String message6 = "Niepowodzenie, przy wpłacie. Podano ujemną wartość ";
+                                System.out.println("Wybrano opcje wpłaty");
+                                String money = brinp.readLine();
 
-                            if (money.length() == 0)
-                                money = brinp.readLine();
-                            double moneyCheck = Double.parseDouble(money);
-                            if (moneyCheck > 0) {
-                                depositMoney(line, money, bankUsers);
-                                System.out.println("Pieniądze zostały wpłacone wysyłam wiadomość");
-                                out.writeBytes(message + "\n\r");
-                                break;
-                            }
-                            else
-                                System.out.println("Pieniądze nie zostały wpłacone wysyłam wiadomość");
-                            out.writeBytes(message6);
-
+                                if (money.length() == 0)
+                                    money = brinp.readLine();
+                                double moneyCheck = Double.parseDouble(money);
+                                if (moneyCheck > 0) {
+                                    depositMoney(line, money, bankUsers);
+                                    System.out.println("Pieniądze zostały wpłacone wysyłam wiadomość");
+                                    out.writeBytes(message + "\n\r");
+                                    break;
+                                } else
+                                    System.out.println("Pieniądze nie zostały wpłacone wysyłam wiadomość");
+                                out.writeBytes(message6);
 
 
-                        case "3":
-                            System.out.println("Wybrano opcję przelewu");
-                            String money1 = brinp.readLine();
-                            if (money1.length() == 0)
-                                money1 = brinp.readLine();
-                            String accountNumberOfRecipent = brinp.readLine();
-                            if (accountNumberOfRecipent.length() == 0)
-                                accountNumberOfRecipent = brinp.readLine();
+                            case "3":
+                                System.out.println("Wybrano opcję przelewu");
+                                String money1 = brinp.readLine();
+                                if (money1.length() == 0)
+                                    money1 = brinp.readLine();
+                                String accountNumberOfRecipent = brinp.readLine();
+                                if (accountNumberOfRecipent.length() == 0)
+                                    accountNumberOfRecipent = brinp.readLine();
 
-                            String message1 = transferMoney(line, money1, accountNumberOfRecipent, bankUsers);
+                                String message1 = transferMoney(line, money1, accountNumberOfRecipent, bankUsers);
 
-                            if (message1 == "Sukces") {
-                                System.out.println("Przelew wykonano pomyślnie");
-                                out.writeBytes("True" + "\n\r");
+                                if (message1 == "Sukces") {
+                                    System.out.println("Przelew wykonano pomyślnie");
+                                    out.writeBytes("True" + "\n\r");
+                                    out.flush();
+                                    break;
+                                } else if (message1 == "Za mało pieniędzy na koncie") {
+                                    System.out.println("Za mało pieniędzy na koncie, aby wykonać przelew");
+                                    out.writeBytes("Za mało pieniędzy na koncie" + "\n\r");
+                                    out.flush();
+                                    break;
+                                } else if (message1 == "Minus money") {
+                                    System.out.println("Podano ujemną wartość piniędzy do przlania");
+                                    out.writeBytes("Minus money" + "\n\r");
+                                    out.flush();
+                                    break;
+                                } else if (message1 == "Your number") {
+                                    System.out.println("Podano swój numer konta");
+                                    out.writeBytes("Your number" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+
+                            case "4":
+                                System.out.println("Wybrano opcję sprawdzenia stanu konta");
+                                String message2 = checkAccount(line, bankUsers);
+                                System.out.println(message2);
+                                out.writeBytes(message2 + "\n\r");
                                 out.flush();
+                                System.out.println("Informacja o koncie została wysłana " + message2);
                                 break;
-                            } else if (message1 == "Za mało pieniędzy na koncie") {
-                                System.out.println("Za mało pieniędzy na koncie, aby wykonać przelew");
-                                out.writeBytes("Za mało pieniędzy na koncie" + "\n\r");
-                                out.flush();
+                            case "5":
+                                socket.close();
+                                System.out.println("Wylogowano");
+                                //TODO dodać komende do rozłączenia z serwerem
                                 break;
-                            } else if (message1 == "Minus money") {
-                                System.out.println("Podano ujemną wartość piniędzy do przlania");
-                                out.writeBytes("Minus money" + "\n\r");
-                                out.flush();
-                                break;
-                            } else if (message1 == "Your number") {
-                                System.out.println("Podano swój numer konta");
-                                out.writeBytes("Your number" + "\n\r");
-                                out.flush();
-                                break;
-                            }
+                        }
+                    } while (downloadString != "5");
 
-                        case "4":
-                            System.out.println("Wybrano opcję sprawdzenia stanu konta");
-                            String message2 = checkAccount(line, bankUsers);
-                            System.out.println(message2);
-                            out.writeBytes(message2 + "\n\r");
+                } catch (IOException e) {
+
+                    System.out.println("Błąd wejścia-wyjścia: " + e);
+                }
+
+            } else if (starterMessage == "Admin") {
+                try {
+                    //odczytanie podanych lini przez serwer dla loginu i hasła
+                    String resultTrue = "true";
+                    String resultFalse = "false";
+                    String login = brinp.readLine();
+                    System.out.println("Odczytano login: " + login);
+                    String password = brinp.readLine();
+                    System.out.println("Odczytano hasło: " + password);
+                    String line = login + ";" + password;
+                    System.out.println(line);
+
+                    for (BankUser users : bankUsers) {
+                        if (line.equals(users.getLogin() + ";" + users.getPassword())) {
+                            out.writeBytes(resultTrue + "\n\r");
                             out.flush();
-                            System.out.println("Informacja o koncie została wysłana " + message2);
+                            System.out.println("Wysłano linię: " + resultTrue);
                             break;
-                        case "5":
-                            socket.close();
-                            System.out.println("Wylogowano");
-                            //TODO dodać komende do rozłączenia z serwerem
-                            break;
+                        } else {
+                            out.writeBytes(resultFalse + "\n\r");
+                            out.flush();
+                            System.out.println("Wysłano linię: " + resultFalse);
+                        }
                     }
-                } while (downloadString != "5");
+                    System.out.println("Pętla true/false się zakończyła, rozpoczynam głóną pętlę");
 
-            } catch (IOException e) {
+                    String downloadString = null;
+                    do {
+                        downloadString = brinp.readLine();
+                        System.out.println("Wybrano numer " + downloadString);
 
-                System.out.println("Błąd wejścia-wyjścia: " + e);
+                        switch (downloadString) {
+                            case "1":
+                            case "2":
+                            case "3":
+                            case "4":
+
+                        }
+
+
+                    } while (downloadString != "5");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -274,7 +329,6 @@ public class EchoServerThread implements Runnable {
     //TODO analogicznie zrobić panel administratora w panelu tym będzie potrzebna metoda do generowania unikalnego numeru konta, a także kolejny plik który będzie zczytywał dane administratora - Szymon
 
     //TODO POBOCZNE
-
 
 
     //serwer na pare kilentów zrobiony
