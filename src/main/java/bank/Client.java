@@ -83,7 +83,7 @@ public class Client {
                     do {
                         printOptions();
                         option = brLocalInp.readLine();
-                        out.writeBytes(option + "\n"); //dodać ew \r
+                        out.writeBytes(option + "\n");
                         out.flush();
                         System.out.println("Wysyłam do serwera numer: " + option);
                         switch (option) {
@@ -180,14 +180,9 @@ public class Client {
                 }
 
 
-            } else {
+            } else if (validate == false) {
                 System.out.println("Niepoprawne dane logowania");
-//                try {
-//                    //clientSocket.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                System.exit(0);
+                System.exit(0);
             }
         }
     }
@@ -202,6 +197,7 @@ public class Client {
                 out.writeBytes(password + "\n");
                 out.flush();
                 line = brSockInp.readLine();
+
                 System.out.println("Otrzymano : " + line);
 
             }

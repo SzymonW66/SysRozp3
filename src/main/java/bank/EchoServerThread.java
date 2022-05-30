@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 
 public class EchoServerThread implements Runnable {
@@ -59,18 +60,24 @@ public class EchoServerThread implements Runnable {
                     String line = login + ";" + password;
                     System.out.println(line);
 
-                    for (BankUser users : bankUsers) {
-                        if (line.equals(users.getLogin() + ";" + users.getPassword())) {
-                            out.writeBytes(resultTrue + "\n\r");
-                            out.flush();
-                            System.out.println("Wysłano linię: " + resultTrue);
-                            break;
-                        } else {
-                            out.writeBytes(resultFalse + "\n\r");
-                            out.flush();
-                            System.out.println("Wysłano linię: " + resultFalse);
+
+//problem z wysłaniem wiadomości co przejście pętli
+                        for (BankUser users : bankUsers) {
+                            if (line.equals(users.getLogin() + ";" + users.getPassword())) {
+                                out.writeBytes(resultTrue + "\n\r");
+                                out.flush();
+                                System.out.println("Wysłano linię: " + resultTrue);
+                                break;
+                            } else {
+                                //  out.writeBytes(resultFalse + "\n\r");
+                              //  out.flush();
+                                System.out.println("Wysłano linię: " + resultFalse);
+
+                            }
+
                         }
-                    }
+
+
                     System.out.println("Pętla true/false się zakończyła, rozpoczynam głóną pętlę");
 
                     String downloadString = null;
@@ -181,7 +188,7 @@ public class EchoServerThread implements Runnable {
                     System.out.println("Błąd wejścia-wyjścia: " + e);
                 }
 
-            } else if (starterMessage == "Admin") {
+            } else if (starterMessage.equals("Admin")) {
                 try {
                     //odczytanie podanych lini przez serwer dla loginu i hasła
                     String resultTrue = "true";
@@ -190,21 +197,18 @@ public class EchoServerThread implements Runnable {
                     System.out.println("Odczytano login: " + login);
                     String password = brinp.readLine();
                     System.out.println("Odczytano hasło: " + password);
-                    String line = login + ";" + password;
-                    System.out.println(line);
 
-                    for (BankUser users : bankUsers) {
-                        if (line.equals(users.getLogin() + ";" + users.getPassword())) {
-                            out.writeBytes(resultTrue + "\n\r");
-                            out.flush();
-                            System.out.println("Wysłano linię: " + resultTrue);
-                            break;
-                        } else {
-                            out.writeBytes(resultFalse + "\n\r");
-                            out.flush();
-                            System.out.println("Wysłano linię: " + resultFalse);
-                        }
+                    if (password.equals(administrator.getPassword()) && login.equals(administrator.getLogin())){
+                        out.writeBytes(resultTrue + "\n\r");
+                        out.flush();
+                        System.out.println("Wysłano linię " + resultTrue);
                     }
+                    else {
+                        out.writeBytes(resultFalse + "\n\r");
+                        out.flush();
+                        System.out.println("Wysłano linie " + resultFalse);
+                    }
+
                     System.out.println("Pętla true/false się zakończyła, rozpoczynam głóną pętlę");
 
                     String downloadString = null;
@@ -214,10 +218,125 @@ public class EchoServerThread implements Runnable {
 
                         switch (downloadString) {
                             case "1":
-                            case "2":
-                            case "3":
-                            case "4":
+                                System.out.println("Wybrano nr 1 - dodanie nowego użytkownika");
+                                String name1 = brinp.readLine();
+                                if (name1.length() == 0)
+                                    name1 = brinp.readLine();
+                                System.out.println(name1);
+                                String surname = brinp.readLine();
+                                if (surname.length() == 0)
+                                    surname = brinp.readLine();
+                                System.out.println(surname);
+                                String pesel1 = brinp.readLine();
+                                if (pesel1.length() == 0)
+                                    pesel1 = brinp.readLine();
+                                System.out.println(pesel1);
+                                String login1 = brinp.readLine();
+                                if(login1.length() == 0)
+                                    login1 = brinp.readLine();
+                                System.out.println(login1);
+                                String password1 = brinp.readLine();
+                                if (password1.length() == 0)
+                                    password1 = brinp.readLine();
+                                System.out.println(password1);
 
+                                String message1 = addNewUser(name1, surname, pesel1, login1, password1, bankUsers);
+
+                                if (message1.equals("True")){
+                                    System.out.println("Operacja się udała, wysyłam sukces");
+                                    out.writeBytes("True" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                                else if (message1.equals("False")) {
+                                    System.out.println("Coś poszło nie tak");
+                                    out.writeBytes("False" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                                //metoda dodająca użytkownika
+
+                            case "2":
+                                System.out.println("Wybrano nr 2 - edycja imienia");
+                                String accountNumberOfRecipent = brinp.readLine();
+                                if (accountNumberOfRecipent.length() == 0)
+                                    accountNumberOfRecipent = brinp.readLine();
+                                String newName = brinp.readLine();
+                                if(newName.length() == 0) {
+                                    newName = brinp.readLine();
+                                }
+                                String message2 = changeNameByAdmin(newName, accountNumberOfRecipent, bankUsers);
+                                if (message2.equals("Sukces")){
+                                    System.out.println("Operacja się udała, wysyłam sukces");
+                                    out.writeBytes("Sukces" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                                else if (message2.equals("Puste pole")){
+                                    out.writeBytes("Puste pole" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                                else if (message2.equals("Nie znaleziono")){
+                                    out.writeBytes("Nie znaleziono" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                            case "3":
+                                System.out.println("Wybrano nr 3 - edycja nazwiska");
+                                String accountNumberOfRecipent2 = brinp.readLine();
+                                if (accountNumberOfRecipent2.length() == 0)
+                                    accountNumberOfRecipent2 = brinp.readLine();
+                                String newSurname = brinp.readLine();
+                                if(newSurname.length() == 0) {
+                                    newSurname = brinp.readLine();
+                                }
+                                String message3 = changeSurnameByAdmin(newSurname, accountNumberOfRecipent2, bankUsers);
+
+                                if (message3.equals("Sukces")){
+                                    System.out.println("Operacja się udała, wysyłam sukces");
+                                    out.writeBytes("Sukces" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                                else if (message3.equals("Puste pole")){
+                                    out.writeBytes("Puste pole" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                                else if (message3.equals("Nie znaleziono")){
+                                    out.writeBytes("Nie znaleziono" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                            case "4":
+                                System.out.println("Wybrano nr 4 - edycja PESEL");
+                                String accountNumberOfRecipent3 = brinp.readLine();
+                                if (accountNumberOfRecipent3.length() == 0)
+                                    accountNumberOfRecipent3 = brinp.readLine();
+                                String newPESEL = brinp.readLine();
+                                if(newPESEL.length() == 0) {
+                                    newPESEL = brinp.readLine();
+                                }
+                                String message4 = changePESELByAdmin(newPESEL, accountNumberOfRecipent3, bankUsers);
+
+                                if (message4.equals("Sukces")){
+                                    System.out.println("Operacja się udała, wysyłam sukces");
+                                    out.writeBytes("Sukces" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                                else if (message4.equals("Puste pole")){
+                                    out.writeBytes("Puste pole" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                                else if (message4.equals("Nie znaleziono")){
+                                    out.writeBytes("Nie znaleziono" + "\n\r");
+                                    out.flush();
+                                    break;
+                                }
+                            case "5":
                         }
 
 
@@ -230,6 +349,20 @@ public class EchoServerThread implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    static String addNewUser(String name, String lastName, String pesel, String login, String password, ArrayList<BankUser> bankUsers){
+        FileManager fileManager = new FileManager();
+        if (name != null || lastName != null || pesel != null || login != null || password != null) {
+        double money = 0;
+        String newAccount = generateNewAccountNumber();
+        BankUser bankUser = new BankUser(name, lastName, pesel, login, password, money, newAccount);
+        bankUsers.add(bankUser);
+        fileManager.saveBankUsersToFile(bankUsers);
+        return "True";
+        }
+        else
+            return "False";
     }
 
     static void depositMoney(String line, String money, ArrayList<BankUser> bankUsers) {
@@ -294,8 +427,78 @@ public class EchoServerThread implements Runnable {
         } else
             return yourNumber;
     }
-// zastanowić się nad zmianą typu na String i obsługiwać potem w kliencie to co się tam odjaniepawla
-    //   static boolean doesExist(String lookingFor,)
+
+    static String changeNameByAdmin (String newName, String account, ArrayList<BankUser> bankUsers){
+        FileManager fileManager = new FileManager();
+        String isEmpty = "Puste pole";
+        String noAccount = "Nie znaleziono";
+        String sukcess = "Sukces";
+        BankUser currentPerson = findPersonByNumberAccount(account, bankUsers);
+        assert currentPerson != null;
+        if (newName != null){
+            if (currentPerson != null) {
+                currentPerson.setFirstName(newName);
+                int index = bankUsers.indexOf(currentPerson);
+                bankUsers.set(index, currentPerson);
+                fileManager.saveBankUsersToFile(bankUsers);
+                return sukcess;
+            }
+            else {
+              return noAccount;
+            }
+        }
+        else {
+            return isEmpty;
+        }
+    }
+
+    static String changeSurnameByAdmin (String newSurname, String account, ArrayList<BankUser> bankUsers){
+        FileManager fileManager = new FileManager();
+        String isEmpty = "Puste pole";
+        String noAccount = "Nie znaleziono";
+        String sukcess = "Sukces";
+        BankUser currentPerson = findPersonByNumberAccount(account, bankUsers);
+        assert currentPerson != null;
+        if (newSurname != null){
+            if (currentPerson != null) {
+                currentPerson.setSecondName(newSurname);
+                int index = bankUsers.indexOf(currentPerson);
+                bankUsers.set(index, currentPerson);
+                fileManager.saveBankUsersToFile(bankUsers);
+                return sukcess;
+            }
+            else {
+                return noAccount;
+            }
+        }
+        else {
+            return isEmpty;
+        }
+    }
+
+    static String changePESELByAdmin (String newPESEL, String account, ArrayList<BankUser> bankUsers){
+        FileManager fileManager = new FileManager();
+        String isEmpty = "Puste pole";
+        String noAccount = "Nie znaleziono";
+        String sukcess = "Sukces";
+        BankUser currentPerson = findPersonByNumberAccount(account, bankUsers);
+        assert currentPerson != null;
+        if (newPESEL != null){
+            if (currentPerson != null) {
+                currentPerson.setSecondName(newPESEL);
+                int index = bankUsers.indexOf(currentPerson);
+                bankUsers.set(index, currentPerson);
+                fileManager.saveBankUsersToFile(bankUsers);
+                return sukcess;
+            }
+            else {
+                return noAccount;
+            }
+        }
+        else {
+            return isEmpty;
+        }
+    }
 
     static String checkAccount(String line, ArrayList<BankUser> bankUsers) {
         String info = null;
@@ -303,6 +506,12 @@ public class EchoServerThread implements Runnable {
         assert currentPerson != null;
         info = currentPerson.toString();
         return info;
+    }
+
+    static String generateNewAccountNumber(){
+        Random random = new Random();
+        int pin = random.nextInt(999999999) - 99999999;
+        return pin + "";
     }
 
     static BankUser findPersonByNumberAccount(String lookingFor, ArrayList<BankUser> bankUsers) {
@@ -324,11 +533,16 @@ public class EchoServerThread implements Runnable {
         }
         return bankUser;
     }
-    //TODO GŁÓWNE
-    //TODO dokończyć metody edycji danych - Szymon i Kuba
+
+
+    //TODO PANEL ADMIN
+    //TODO switch do dodania użytkownika
+    //TODO switch do edycji PESELU
+    //TODO switche do zamykania aplikacji
+
     //TODO analogicznie zrobić panel administratora w panelu tym będzie potrzebna metoda do generowania unikalnego numeru konta, a także kolejny plik który będzie zczytywał dane administratora - Szymon
 
-    //TODO POBOCZNE
+
 
 
     //serwer na pare kilentów zrobiony
