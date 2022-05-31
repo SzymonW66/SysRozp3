@@ -60,21 +60,33 @@ public class EchoServerThread implements Runnable {
                     String line = login + ";" + password;
                     System.out.println(line);
 
-
+                    int countTrue = 0;
+                    int countFalse = 0;
 //problem z wysłaniem wiadomości co przejście pętli
                         for (BankUser users : bankUsers) {
                             if (line.equals(users.getLogin() + ";" + users.getPassword())) {
-                                out.writeBytes(resultTrue + "\n\r");
-                                out.flush();
-                                System.out.println("Wysłano linię: " + resultTrue);
-                                break;
+                                countTrue ++;
+                              //  out.writeBytes(resultTrue + "\n\r");
+                              //  out.flush();
+                              //  System.out.println("Wysłano linię: " + resultTrue);
+                             //   break;
                             } else {
+                                countFalse ++;
                                 //  out.writeBytes(resultFalse + "\n\r");
                               //  out.flush();
-                                System.out.println("Wysłano linię: " + resultFalse);
-
+                              //  System.out.println("Wysłano linię: " + resultFalse);
+                            //    socket.close();
+                            //    System.exit(0);
                             }
-
+                        }
+                        if(countTrue == 1) {
+                            out.writeBytes(resultTrue + "\n\r");
+                              out.flush();
+                              System.out.println("Wysłano linię: " + resultTrue);
+                        }
+                        else
+                        {
+                            out.writeBytes(resultFalse + "\n\r");
                         }
 
 

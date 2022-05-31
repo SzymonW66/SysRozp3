@@ -9,7 +9,7 @@ public class EchoServer {
         ServerSocket serverSocket = null;
         Socket socket = null;
         try {
-            serverSocket = new ServerSocket(6666);
+            serverSocket = new ServerSocket(6667);
         } catch (IOException e) {
             System.out.println(
                     "Błąd przy tworzeniu gniazda serwerowego " + e);

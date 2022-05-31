@@ -59,7 +59,7 @@ public class Admin {
         while (true) {
             //wysłanie że jest to aplikacja administratora i ma się uruchomić odpowiedni switch
             String message = "Admin";
-            out.writeBytes(message + "\n"); // dodać ewentualnie /r
+            out.writeBytes(message + "\n");
             out.flush();
             System.out.println(message);
             System.out.println("Wysłano informację że jest to aplikacja administratora");

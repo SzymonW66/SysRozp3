@@ -14,7 +14,7 @@ public class Client {
         String host = "localhost";
         int port = 0;
         try {
-            port = new Integer("6666").intValue();
+            port = new Integer("6667").intValue();
         } catch (NumberFormatException e) {
             System.out.println("Nieprawidłowy argument: port");
             System.exit(-1);
