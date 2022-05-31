@@ -139,7 +139,7 @@ public class Client {
                                     if (info3.length() == 0) {
                                         info3 = brSockInp.readLine();
                                     }
-                                    if (info3.equals("Sukces")) {
+                                    if (info3.equals("True")) {
                                         System.out.println("Przelew został wykonany poprawnie");
                                         break;
                                     } else if (info3.equals("Za mało pieniędzy na koncie")) {

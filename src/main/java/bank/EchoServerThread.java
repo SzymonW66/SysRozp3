@@ -180,8 +180,10 @@ public class EchoServerThread implements Runnable {
                                 }
 
                             case "4":
+                                ArrayList<BankUser> bankUsers1 = fileManager.loadBankUsersFromFile();
+
                                 System.out.println("Wybrano opcję sprawdzenia stanu konta");
-                                String message2 = checkAccount(line, bankUsers);
+                                String message2 = checkAccount(line, bankUsers1);
                                 System.out.println(message2);
                                 out.writeBytes(message2 + "\n\r");
                                 out.flush();
@@ -430,6 +432,7 @@ public class EchoServerThread implements Runnable {
                     bankUsers.set(index, currentPerson);
                     bankUsers.set(index1, transferRecipient);
                     fileManager.saveBankUsersToFile(bankUsers);
+                    bankUsers = new ArrayList<BankUser> ();
                     System.out.println("Zwracam Sukces");
                     return messeageSucces;
                 } else
