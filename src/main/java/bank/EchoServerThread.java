@@ -546,21 +546,4 @@ public class EchoServerThread implements Runnable {
         return bankUser;
     }
 
-
-    //TODO PANEL ADMIN
-    //TODO switch do dodania użytkownika
-    //TODO switch do edycji PESELU
-    //TODO switche do zamykania aplikacji
-
-    //TODO analogicznie zrobić panel administratora w panelu tym będzie potrzebna metoda do generowania unikalnego numeru konta, a także kolejny plik który będzie zczytywał dane administratora - Szymon
-
-
-
-
-    //serwer na pare kilentów zrobiony
-    //switche działają
-    //logowanie działa
-    // działa case 2 (wpłata)
-    // działa case 4 (informacje o koncie)
-    // działa case 1 (wypłata)
 }

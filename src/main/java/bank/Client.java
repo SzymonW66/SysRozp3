@@ -38,8 +38,8 @@ public class Client {
         //Deklaracje zmiennych strumieniowych
         String line = null;
         String info = null;
-        String username = null; //Zmienna dla loginu
-        String password = null; //Zmienna dla hasła
+        String username = null;
+        String password = null;
         BufferedReader brSockInp = null;
         BufferedReader brLocalInp = null;
         DataOutputStream out = null;
@@ -60,7 +60,7 @@ public class Client {
         while (true) {
             //Wysłanie wiadomości że to jest aplikacja kliencka
             String message = "Client";
-            out.writeBytes(message + "\n"); // dodać ewentualnie /r
+            out.writeBytes(message + "\n");
             out.flush();
             System.out.println(message);
             System.out.println("Wysłano informację że jest to aplikacja kliencka");
