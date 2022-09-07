@@ -19,25 +19,25 @@ public class Client {
             System.out.println("Nieprawidłowy argument: port");
             System.exit(-1);
         }
-        //Inicjalizacja gniazda klienckiego
+        //Client socket initialization
         Socket clientSocket = null;
         try {
             clientSocket = new Socket(host, port);
         } catch (UnknownHostException e) {
-            System.out.println("Nieznany host.");
+            System.out.println("Unknown host.");
             System.exit(-1);
         } catch (ConnectException e) {
-            System.out.println("Połączenie odrzucone.");
+            System.out.println("Connection rejected.");
             System.exit(-1);
         } catch (IOException e) {
             System.out.println("Błąd wejścia-wyjścia: " + e);
             System.exit(-1);
         }
-        System.out.println("Połączono z " + clientSocket);
+        System.out.println("Connected with " + clientSocket);
 
         //Deklaracje zmiennych strumieniowych
-        String line = null;
-        String info = null;
+        //String line = null;
+       // String info = null;
         String username = null;
         String password = null;
         BufferedReader brSockInp = null;
@@ -192,13 +192,13 @@ public class Client {
         String line = null;
         try {
             if (password != null && username != null) {
-                System.out.println("Wysyłam: " + username + " " + password);
+                System.out.println("Sending: " + username + " " + password);
                 out.writeBytes(username + "\n");
                 out.writeBytes(password + "\n");
                 out.flush();
                 line = brSockInp.readLine();
 
-                System.out.println("Otrzymano : " + line);
+                System.out.println("Recived : " + line);
 
             }
             if (password == null || username == null) {

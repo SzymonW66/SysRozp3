@@ -80,5 +80,4 @@ public class BankUser {
         return firstName + ";" + secondName + ";" + pesel + ";" + login + ";" + password + ";" + money + ";" + accountNumber;
     }
 
-    //account number ma być na końcu
 }

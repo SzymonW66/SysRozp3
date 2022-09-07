@@ -113,15 +113,13 @@ public class Admin {
                                     info1 = brSockInp.readLine();
                                 }
                                 System.out.println(info1);
-                                if (info1.equals("True")){
+                                if (info1.equals("True")) {
                                     System.out.println("Dodano nowego użytkownika");
                                     break;
-                                }
-                                else if (info1.equals("False")) {
+                                } else if (info1.equals("False")) {
                                     System.out.println("Zmiana zakończona niepomyślnie, upewnij się że wszędzie zostały podane informacje, a nie puste linie ");
                                     break;
                                 }
-
 
 
                             case "2":
@@ -131,7 +129,7 @@ public class Admin {
                                 out.writeBytes(accountNumber2 + "\n");
                                 out.flush();
                                 System.out.println("Podaj nowe imię klienta");
-                                String name2  = brLocalInp.readLine();
+                                String name2 = brLocalInp.readLine();
                                 out.writeBytes(name2 + "\n");
                                 out.flush();
                                 String info2 = brSockInp.readLine();
@@ -140,15 +138,13 @@ public class Admin {
                                     info2 = brSockInp.readLine();
                                 }
                                 System.out.println(info2);
-                                if (info2.equals("Sukces")){
+                                if (info2.equals("Sukces")) {
                                     System.out.println("Zmiana zakończona pomyślnie");
                                     break;
-                                }
-                                else if (info2.equals("Puste pole")) {
+                                } else if (info2.equals("Puste pole")) {
                                     System.out.println("Zmiana zakończona niepomyślnie, podano puste pole zamiast nowego imienia");
                                     break;
-                                }
-                                else if (info2.equals("Nie znaleziono")) {
+                                } else if (info2.equals("Nie znaleziono")) {
                                     System.out.println("Zmiana zakończona niepomyślnie, nie znaleziono numeru konta spórbuj ponownie");
                                     break;
                                 }
@@ -160,7 +156,7 @@ public class Admin {
                                 out.writeBytes(accountNumber3 + "\n");
                                 out.flush();
                                 System.out.println("Podaj nowe imię klienta");
-                                String name3  = brLocalInp.readLine();
+                                String name3 = brLocalInp.readLine();
                                 out.writeBytes(name3 + "\n");
                                 out.flush();
                                 String info3 = brSockInp.readLine();
@@ -168,14 +164,12 @@ public class Admin {
                                 if (info3.length() == 0) {
                                     info3 = brSockInp.readLine();
                                 }
-                                if (info3.equals("Sukces")){
+                                if (info3.equals("Sukces")) {
                                     System.out.println("Zmiana zakończona pomyślnie");
                                     break;
-                                }
-                                else if (info3.equals("Puste pole")) {
+                                } else if (info3.equals("Puste pole")) {
                                     System.out.println("Zmiana zakończona niepomyślnie, podano puste pole zamiast nowego imienia");
-                                }
-                                else if (info3.equals("Nie znaleziono")) {
+                                } else if (info3.equals("Nie znaleziono")) {
                                     System.out.println("Zmiana zakończona niepomyślnie, nie znaleziono numeru konta spórbuj ponownie");
                                 }
 
@@ -186,7 +180,7 @@ public class Admin {
                                 out.writeBytes(accountNumber4 + "\n");
                                 out.flush();
                                 System.out.println("Podaj nowe imię klienta");
-                                String name4  = brLocalInp.readLine();
+                                String name4 = brLocalInp.readLine();
                                 out.writeBytes(name4 + "\n");
                                 out.flush();
                                 String info4 = brSockInp.readLine();
@@ -194,15 +188,13 @@ public class Admin {
                                 if (info4.length() == 0) {
                                     info4 = brSockInp.readLine();
                                 }
-                                if (info4.equals("Sukces")){
+                                if (info4.equals("Sukces")) {
                                     System.out.println("Zmiana zakończona pomyślnie");
                                     break;
-                                }
-                                else if (info4.equals("Puste pole")) {
+                                } else if (info4.equals("Puste pole")) {
                                     System.out.println("Zmiana zakończona niepomyślnie, podano puste pole zamiast nowego imienia");
                                     break;
-                                }
-                                else if (info4.equals("Nie znaleziono")) {
+                                } else if (info4.equals("Nie znaleziono")) {
                                     System.out.println("Zmiana zakończona niepomyślnie, nie znaleziono numeru konta spórbuj ponownie");
                                     break;
                                 }
