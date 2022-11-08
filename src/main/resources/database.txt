@@ -6,3 +6,4 @@ anna;kurpicka;00120343546;anku01;qpwoei;0.0;546372819
 aleksandra;jezyk;00988533420;olka321;haslo321;1050.0;912837654
 ania;kowalik;87634576512;ania12;aniulka;0.0;417725404
 zenek;martyniuk;57359002745;zenus;zenus1;0.0;191094520
+john;kennedy;445566667;kenjo;yesplease;0.0;63977267
